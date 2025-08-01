@@ -1,3 +1,4 @@
+from loguru import logger
 from sanic import Sanic, json
 
 app = Sanic("demo")
@@ -5,11 +6,13 @@ app = Sanic("demo")
 
 @app.get("/api")
 async def hello(request):
+    logger.info(f"api接口")
     return json({"msg": "Hello, Sanic!"})
 
 
 @app.post("/api/add")
 async def add(request):
+    logger.info(f"api-add接口")
     try:
         data = request.json
         a = float(data["a"])
