@@ -1,0 +1,28 @@
+services:
+  qwen3_30b:
+    image: vllm/vllm-openai:v0.10.0
+    command: --model /models/qwen3_30b_a3b --served-model-name Qwen3-30B-A3B --dtype=bfloat16 --max-model-len 40960 --gpu-memory-utilization 0.95 --tensor-parallel-size 4 --trust-remote-code --enforce-eager --tool-call-parser hermes --enable-auto-tool-choice
+    volumes:
+      - /home/models/qwen3_30b_a3b:/models/qwen3_30b_a3b
+    ports:
+      - "8010:8000"
+    networks:
+      - qwen3_30b_a3b
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: [ '2','3','4','5' ]
+              capabilities: [ gpu ]
+    runtime: nvidia
+    shm_size: '100g'  # 增加共享内存大小
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500m"
+        max-file: "5"
+
+networks:
+  qwen3_30b_a3b:
+    driver: bridge

@@ -1,0 +1,24 @@
+services:
+  knowledge:
+    image: sanic_demo:v1
+    command: python /docker_compose_learn/web/4_sanic_demo.py
+    environment:
+      TZ: Asia/Shanghai
+      ENVIRONMENT: production
+      PYTHONPATH: /docker_compose_learn
+    volumes:
+      - "/data/docker_compose_learn:/docker_compose_learn"
+    networks:
+      - demo_network
+    ports:
+      - "8011:8011"
+    shm_size: '5g'  # 增加共享内存大小
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500m"
+        max-file: "5"
+
+networks:
+  demo_network:
+    driver: bridge

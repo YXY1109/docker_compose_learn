@@ -1,0 +1,34 @@
+services:
+  bge:
+    image: bge:v3
+    command: python /docker_compose_learn/web/2_sanic_bge.py --workers 5 --port 8011 --bge_m3_path /models/bge_m3 --bge_reranker_path /models/bge-reranker-v2-m3
+    environment:
+      TZ: Asia/Shanghai
+      ENVIRONMENT: production
+      PYTHONPATH: /docker_compose_learn
+    volumes:
+      - "/home/models/bge_m3:/models/bge_m3"
+      - "/home/models/bge-reranker-v2-m3:/models/bge-reranker-v2-m3"
+      - "/data/docker_compose_learn:/docker_compose_learn"
+    networks:
+      - bge_network
+    ports:
+      - "8011:8011"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: [ '0' ]
+              capabilities: [ gpu ]
+    runtime: nvidia
+    shm_size: '50g'  # 增加共享内存大小
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500m"
+        max-file: "5"
+
+networks:
+  bge_network:
+    driver: bridge

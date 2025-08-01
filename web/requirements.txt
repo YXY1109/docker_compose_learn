@@ -1,0 +1,7 @@
+flagembedding==1.3.5
+loguru==0.7.3
+modelscope==1.28.1
+numpy==2.3.2
+Requests==2.32.4
+sanic==25.3.0
+torch==2.6.0+cu126

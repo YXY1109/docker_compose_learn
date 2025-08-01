@@ -1,0 +1,6 @@
+modelscope==1.28.1
+FlagEmbedding==1.3.5
+numpy==1.26.4
+sanic==25.3.0
+loguru==0.7.3
+isort==6.0.1
