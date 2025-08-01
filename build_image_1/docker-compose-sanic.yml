@@ -5,7 +5,7 @@ services:
     environment:
       TZ: Asia/Shanghai
       ENVIRONMENT: production
-      PYTHONPATH: /docker_compose_learn
+      PYTHONPATH: /app
     volumes:
       - "/root/code/docker_compose_learn/build_image_1:/app"
     networks:
