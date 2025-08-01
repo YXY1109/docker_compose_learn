@@ -1,6 +1,6 @@
 services:
-  knowledge:
-    image: sanic_demo:v1
+  sanic_demo:
+    image: sanic_demo:v1.0
     command: python /app/sanic_demo.py
     environment:
       TZ: Asia/Shanghai
