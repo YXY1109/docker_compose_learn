@@ -1,13 +1,13 @@
 services:
   knowledge:
     image: sanic_demo:v1
-    command: python /app/web/4_sanic_demo.py
+    command: python /app/sanic_demo.py
     environment:
       TZ: Asia/Shanghai
       ENVIRONMENT: production
       PYTHONPATH: /docker_compose_learn
     volumes:
-      - "/data/app:/app"
+      - "/root/code/docker_compose_learn/build_image_1:/app"
     networks:
       - demo_network
     ports:
