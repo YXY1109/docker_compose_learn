@@ -1,6 +1,6 @@
 services:
   sanic_demo2:
-    image: sanic_demo:v2.0
+    image: sanic_demo:v2.1
     command: python /app/sanic_demo.py
     environment:
       TZ: Asia/Shanghai
