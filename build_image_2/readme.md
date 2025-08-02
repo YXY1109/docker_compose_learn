@@ -54,4 +54,6 @@ docker commit sanic-temp sanic_demo:v2.0
 >
 > 启动docker-compose：
 > docker-compose -f docker-compose-sanic.yml up
+>
+> 访问：curl http://localhost:8012/api
 

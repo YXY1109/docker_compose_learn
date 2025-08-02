@@ -26,4 +26,3 @@ requirements_manual.txt
 >
 > 生成：requirements.txt
 
-## 二，制作镜像
