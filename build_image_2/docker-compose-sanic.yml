@@ -1,0 +1,24 @@
+services:
+  sanic_demo2:
+    image: sanic_demo:v2.0
+    command: python /app/sanic_demo.py
+    environment:
+      TZ: Asia/Shanghai
+      ENVIRONMENT: production
+      PYTHONPATH: /app
+    volumes:
+      - "/root/code/docker_compose_learn/build_image_2:/app"
+    networks:
+      - demo2_network
+    ports:
+      - "8012:8012"
+    shm_size: '5g'  # 增加共享内存大小
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500m"
+        max-file: "5"
+
+networks:
+  demo2_network:
+    driver: bridge
