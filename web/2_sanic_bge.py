@@ -124,4 +124,4 @@ async def bge_reranker(request):
 
 
 if __name__ == '__main__':
-    app.run(host=args.host, port=args.port, workers=args.workers)
+    app.run(host=args.host, port=args.port, workers=args.workers, debug=False, single_process=True)
