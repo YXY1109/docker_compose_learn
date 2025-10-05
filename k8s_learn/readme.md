@@ -67,6 +67,14 @@ sudo sysctl --system
 修改config.toml文件：sudo vi /etc/containerd/config.toml
 第一处：50行修改为：sandbox = 'registry.aliyuncs.com/google_containers/pause:3.10'
 第二处: 108行添加：SystemdCgroup = true
+第三处：53行修改为：config_path = 'https://mirror.ccs.tencentyun.com'
+```
+
+安装runc：
+
+```
+apt install -y runc
+runc --version
 ```
 
 手动创建containerd.service文件：
@@ -96,10 +104,10 @@ EOF
 ```
 
 ```
-
 重新加载systemd配置：sudo systemctl daemon-reload
 启动并设置开机自启：sudo systemctl enable --now containerd
 检查状态：systemctl status containerd
+重启服务：sudo systemctl restart containerd
 ```
 
 - apt更新，安装kubernetes相关组件(1.34)
@@ -135,6 +143,45 @@ sudo kubeadm init \
 --service-cidr=10.96.0.0/12 \
 --pod-network-cidr=10.244.0.0/16 \
 --cri-socket=unix:///run/containerd/containerd.sock
+```
+
+- kubeadm init失败，重置命令
+
+```
+kubeadm reset -f
+rm -rf /etc/cni/net.d
+systemctl restart containerd
+systemctl restart kubelet
+```
+
+- 节点加入集群，记得放开工作节点的6443端口
+
+```
+kubeadm join 10.6.0.9:6443 --token 3nvudo.h5kk7jfr0c7ai6wp \
+        --discovery-token-ca-cert-hash sha256:60527439ea1f6ee80f3c766f7ea623aeb7806d4c60fa9fc7c40a4ba966de5f6e \
+        --cri-socket=unix:///var/run/containerd/containerd.sock -v=10
+```
+
+- master安装calico网络插件
+
+```
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/tigera-operator.yaml
+kubectl create -f tigera-operator.yaml
+curl -LO https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/custom-resources.yaml
+sed -i 's/cidr: 192.168.0.0/cidr: 10.244.0.0/g' custom-resources.yaml
+kubectl create -f custom-resources.yaml
+查看状态：watch kubectl get all -o wide -n calico-system
+查看节点状态：kubectl get nodes -o wide
+```
+
+```清空操作
+kubectl delete -f custom-resources.yaml
+kubectl delete -f tigera-operator.yaml
+kubectl delete namespace calico-system
+kubectl delete crd installation.operator.tigera.io
+kubectl delete crd tigerastatuses.operator.tigera.io
+# 等待清理完成
+kubectl wait --for=delete namespace/calico-system --timeout=60s
 ```
 
 
