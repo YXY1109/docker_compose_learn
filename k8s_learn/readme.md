@@ -9,6 +9,7 @@
 
 [参考文章1](https://developer.aliyun.com/article/1445670)
 [参考文章2](https://blog.csdn.net/m0_53928179/article/details/139068769)
+[参考文章3](https://blog.csdn.net/m0_51510236/article/details/136329885)
 
 - sudo su
 - 关闭防火墙：
@@ -65,9 +66,7 @@ sudo sysctl --system
 配置：sudo mkdir /etc/containerd
 创建配置文件：sudo containerd config default | sudo tee /etc/containerd/config.toml
 修改config.toml文件：sudo vi /etc/containerd/config.toml
-第一处：50行修改为：sandbox = 'registry.aliyuncs.com/google_containers/pause:3.10'
-第二处: 108行添加：SystemdCgroup = true
-第三处：53行修改为：config_path = 'https://mirror.ccs.tencentyun.com'
+第一处：53行修改为：config_path = '/etc/containerd/certs.d'
 ```
 
 安装runc：
@@ -174,7 +173,7 @@ kubectl create -f custom-resources.yaml
 查看节点状态：kubectl get nodes -o wide
 ```
 
-```清空操作
+```calico清空操作
 kubectl delete -f custom-resources.yaml
 kubectl delete -f tigera-operator.yaml
 kubectl delete namespace calico-system
@@ -182,6 +181,21 @@ kubectl delete crd installation.operator.tigera.io
 kubectl delete crd tigerastatuses.operator.tigera.io
 # 等待清理完成
 kubectl wait --for=delete namespace/calico-system --timeout=60s
+```
+
+- 配置containerd的镜像源
+
+```
+crictl pull docker.io/calico/kube-controllers:v3.30.3
+报错：FATA[0000] validate service connection: validate CRI v1 image API for endpoint "unix:///run/containerd/containerd.sock": rpc error: code = Unimplemented desc = unknown service runtime.v1.ImageService 
+
+systemctl daemon-reload
+systemctl restart containerd
+systemctl status containerd
+
+crictl info
+sudo crictl images
+crictl pull docker.io/calico/kube-controllers:v3.30.3
 ```
 
 

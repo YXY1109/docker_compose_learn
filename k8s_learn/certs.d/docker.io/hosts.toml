@@ -1,0 +1,7 @@
+# 仓库地址（默认官方地址）
+server = "https://docker.io"
+
+# 配置镜像加速器（可选，例如添加国内镜像源）
+[host."https://mirror.ccs.tencentyun.com"]
+  capabilities = ["pull", "resolve"]  # 支持拉取和解析镜像
+
