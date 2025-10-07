@@ -4,4 +4,3 @@ server = "https://registry.k8s.io"
 # 2. 腾讯云 registry.k8s.io 镜像源（备用，与阿里云互补）
 [host."https://mirror.ccs.tencentyun.com"]
   capabilities = ["pull", "resolve"]
-
