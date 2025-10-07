@@ -1,0 +1,7 @@
+# registry.k8s.io 官方仓库地址（固定值，用于标识目标仓库）
+server = "https://registry.k8s.io"
+
+# 2. 腾讯云 registry.k8s.io 镜像源（备用，与阿里云互补）
+[host."https://mirror.ccs.tencentyun.com"]
+  capabilities = ["pull", "resolve"]
+

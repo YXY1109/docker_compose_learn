@@ -86,7 +86,7 @@ sudo sysctl --system
 第三处：107行ShimCgroup下边添加一行：SystemdCgroup = true
 ```
 
-- 配置国内镜像源
+- 配置国内镜像源，一个docker.io和registry.k8s.io
 
 ```
 创建目录：sudo mkdir -p /etc/containerd/certs.d/docker.io/
@@ -242,20 +242,12 @@ kubectl delete crd tigerastatuses.operator.tigera.io
 kubectl wait --for=delete namespace/calico-system --timeout=60s
 ```
 
-- 配置containerd的镜像源
+- 注意事项
+    - 主节点和子节点都需要配置国内镜像源，否则会拉取失败
+    - 总之国内服务器，一定要配置上边的国内镜像源，否则会有各种notready状态的节点
+    - 刚开始安装集群的时候，参考现有文章，一步一个脚印，有问题就问豆包和kimi，最后发现如果网络OK，都是写小问题。
 
-```
-crictl pull docker.io/calico/kube-controllers:v3.30.3
-报错：FATA[0000] validate service connection: validate CRI v1 image API for endpoint "unix:///run/containerd/containerd.sock": rpc error: code = Unimplemented desc = unknown service runtime.v1.ImageService 
-
-systemctl daemon-reload
-systemctl restart containerd
-systemctl status containerd
-
-crictl info
-sudo crictl images
-crictl pull docker.io/calico/kube-controllers:v3.30.3
-```
+![](images/集群安装成功.png)
 
 
 
