@@ -15,3 +15,4 @@
 
 1. 主节点执行，获取秘钥：kubectl config view --raw
 2. 复制整个秘钥，粘贴到github的KUBE_CONFIG中
+3. 需要将内网IP地址替换成公网IP
