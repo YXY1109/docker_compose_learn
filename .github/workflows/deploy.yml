@@ -64,6 +64,7 @@ jobs:
 
       - name: Deploy to K8s
         run: |
-          kubectl apply -f k8s/deployment.yaml
-          kubectl apply -f k8s/service.yaml
+          cd k8s_sanic/k8s
+          kubectl apply -f deployment.yaml
+          kubectl apply -f service.yaml
           kubectl rollout restart deployment/sanic-app
