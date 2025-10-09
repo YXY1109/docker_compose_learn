@@ -25,3 +25,10 @@ docker构建镜像，docker-compose运行服务，k8s集群部署
 ### k8s_sanic
 
 将sanic服务器运行在k8s集群中，代码保存到github，通过actions 自动部署到k8s集群
+
+### 使用UV
+
+uv init
+uv venv .venv --python 3.11
+uv add sanic
+如果未切换虚拟环境，会自动创建虚拟环境.venv
