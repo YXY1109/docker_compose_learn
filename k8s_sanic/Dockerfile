@@ -5,5 +5,5 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # 复制依赖文件并安装
-COPY k8s_sanic/requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

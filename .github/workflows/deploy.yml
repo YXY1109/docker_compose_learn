@@ -3,6 +3,8 @@ name: Build and Deploy to K8s
 on:
   push:
     branches: [ main ] # 仅当 main 分支有变更时触发
+    paths:
+      - 'k8s_sanic/**' # 只有 k8s_sanic 目录变化才触发
   workflow_dispatch: # 支持手动触发
 
 env:
@@ -24,9 +26,7 @@ jobs:
       - name: 三，生成标签
         id: tag
         run: |
-          # 设置时区为 Asia/Shanghai
           export TZ=Asia/Shanghai
-          # 使用提交时间戳作为动态标签（例如 20240615-123456）
           echo "TAG=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
 
       - name: 四，镜像构建和推送
@@ -37,6 +37,8 @@ jobs:
           tags: |
             ${{ env.DOCKERHUB_REPO }}:latest
             ${{ env.DOCKERHUB_REPO }}:${{ steps.tag.outputs.TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy:
     needs: build-push
