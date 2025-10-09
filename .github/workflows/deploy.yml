@@ -67,4 +67,5 @@ jobs:
           cd k8s_sanic/k8s
           kubectl --insecure-skip-tls-verify apply -f deployment.yaml
           kubectl --insecure-skip-tls-verify apply -f service.yaml
+          kubectl --insecure-skip-tls-verify apply -f ingress.yaml
           kubectl --insecure-skip-tls-verify rollout restart deployment/sanic-app
