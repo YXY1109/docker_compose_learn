@@ -51,12 +51,13 @@ jobs:
     needs: build-push
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: 一，获取代码
+        uses: actions/checkout@v4
 
-      - name: Set up kubectl
+      - name: 二，安装 kubectl 工具
         uses: azure/setup-kubectl@v3
 
-      - name: Set K8s context
+      - name: 三，配置集群连接信息
         uses: azure/k8s-set-context@v3
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG }}

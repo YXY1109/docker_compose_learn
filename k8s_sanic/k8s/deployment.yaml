@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: sanic-app
-        image: ghcr.io/<你的GitHub用户名>/my-sanic-app:latest
+        image: yxy1109/k8s-sanic:latest
         ports:
         - containerPort: 8000
         resources:
