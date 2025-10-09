@@ -65,6 +65,6 @@ jobs:
       - name: Deploy to K8s
         run: |
           cd k8s_sanic/k8s
-          kubectl apply -f deployment.yaml
-          kubectl apply -f service.yaml
-          kubectl rollout restart deployment/sanic-app
+          kubectl --insecure-skip-tls-verify apply -f deployment.yaml
+          kubectl --insecure-skip-tls-verify apply -f service.yaml
+          kubectl --insecure-skip-tls-verify rollout restart deployment/sanic-app
