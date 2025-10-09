@@ -12,24 +12,31 @@ jobs:
   build-push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: 一，获取代码
+        uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to GHCR
+      - name: 二，登录Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
+      - name: 三，生成标签
+        id: tag
+        run: |
+          # 设置时区为 Asia/Shanghai
+          export TZ=Asia/Shanghai
+          # 使用提交时间戳作为动态标签（例如 20240615-123456）
+          echo "TAG=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: 四，镜像构建和推送
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: k8s_sanic/
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/my-sanic-app:latest
+          tags: |
+            ${{ env.DOCKERHUB_REPO }}:latest
+            ${{ env.DOCKERHUB_REPO }}:${{ steps.tag.outputs.TAG }}
 
   deploy:
     needs: build-push
