@@ -21,3 +21,7 @@ docker构建镜像，docker-compose运行服务，k8s集群部署
 ### k8s_learn
 
 使用3台腾讯云服务器，系统ubuntu22.04部署k8s集群
+
+### k8s_sanic
+
+将sanic服务器运行在k8s集群中，代码保存到github，通过actions 自动部署到k8s集群
