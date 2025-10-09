@@ -34,4 +34,16 @@ kubectl get svc -n ingress-nginx
 
 访问服务： 由于您没有配置域名，可以直接使用ingress-nginx控制器的外部IP地址在浏览器中访问您的服务。
 这样配置后，您就可以通过主节点的公网IP访问部署在Kubernetes集群中的sanic应用了。
+
+删除po：
+kubectl delete pod ingress-nginx-admission-create-ndpwb -n ingress-nginx
+kubectl delete pod ingress-nginx-admission-patch-q2nh7 -n ingress-nginx
+kubectl delete pod ingress-nginx-controller-69f6c6b89d-h5wmc -n ingress-nginx
+
+查看po：
+kubectl get po -n=ingress-nginx
+
+查看po日志：
+kubectl describe pod ingress-nginx-admission-create-dlmrj -n ingress-nginx
+
 ```
