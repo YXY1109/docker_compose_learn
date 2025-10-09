@@ -17,19 +17,26 @@ jobs:
       - name: 一，获取代码
         uses: actions/checkout@v4
 
-      - name: 二，登录Docker Hub
+      - name: 二，设置 Buildx（切换到 docker-container 驱动）
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
+          driver-opts: |
+            image=moby/buildkit:latest
+
+      - name: 三，登录Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 三，生成标签
+      - name: 四，生成标签
         id: tag
         run: |
           export TZ=Asia/Shanghai
           echo "TAG=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
 
-      - name: 四，镜像构建和推送
+      - name: 五，镜像构建和推送
         uses: docker/build-push-action@v5
         with:
           context: k8s_sanic/
