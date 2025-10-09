@@ -13,14 +13,31 @@ spec:
         app: sanic-app
     spec:
       containers:
-      - name: sanic-app
-        image: yxy1109/k8s-sanic:latest
-        ports:
-        - containerPort: 8000
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "128Mi"
-          limits:
-            cpu: "500m"
-            memory: "256Mi"
+        - name: sanic-app
+          image: yxy1109/k8s-sanic:latest
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+      # 健康检查
+      livenessProbe: #存活探针
+        httpGet:
+          path: /
+          port: 8000
+        initialDelaySeconds: 10   # 应用启动时间
+        periodSeconds: 10
+        timeoutSeconds: 2
+        failureThreshold: 3
+
+      readinessProbe: #就绪探针
+        httpGet:
+          path: /
+          port: 8000
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        timeoutSeconds: 2
