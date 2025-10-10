@@ -65,7 +65,21 @@ jobs:
       - name: Deploy to K8s
         run: |
           cd k8s_sanic/k8s
+          
+          # 判断 ingress-nginx 是否已经部署
+          if ! kubectl --insecure-skip-tls-verify get deployment -n ingress-nginx ingress-nginx-controller >/dev/null 2>&1; then
+            echo "ingress-nginx not found, deploying now..."
+            kubectl --insecure-skip-tls-verify apply -f deploy.yaml
+            # 等待 ingress-nginx 运行
+            kubectl --insecure-skip-tls-verify wait --for=condition=ready pod -l app.kubernetes.io/name=ingress-nginx -n ingress-nginx --timeout=300s
+          else
+            echo "ingress-nginx already exists, skipping deployment."
+          fi
+          
+          # 再部署应用资源
           kubectl --insecure-skip-tls-verify apply -f deployment.yaml
           kubectl --insecure-skip-tls-verify apply -f service.yaml
           kubectl --insecure-skip-tls-verify apply -f ingress.yaml
+          
+          # 重启应用（如果需要）
           kubectl --insecure-skip-tls-verify rollout restart deployment/sanic-app

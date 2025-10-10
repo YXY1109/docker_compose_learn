@@ -35,7 +35,7 @@ image: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.3@sha256:3d671cf2
 改为：
 image: ccr.ccs.tencentyun.com/tkeimages/ingress-nginx-kube-webhook-certgen:v1.6.3
 
-
+我将deploy.yaml改名为：ingress-nginx-deploy.yaml
 kubectl delete -f deploy.yaml   # 如果之前部署过
 kubectl apply -f deploy.yaml
 ```
