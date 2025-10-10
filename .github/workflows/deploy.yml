@@ -69,7 +69,7 @@ jobs:
           # 判断 ingress-nginx 是否已经部署
           if ! kubectl --insecure-skip-tls-verify get deployment -n ingress-nginx ingress-nginx-controller >/dev/null 2>&1; then
             echo "ingress-nginx not found, deploying now..."
-            kubectl --insecure-skip-tls-verify apply -f deploy.yaml
+            kubectl --insecure-skip-tls-verify apply -f ingress-nginx-deploy.yaml
             # 等待 ingress-nginx 运行
             kubectl --insecure-skip-tls-verify wait --for=condition=ready pod -l app.kubernetes.io/name=ingress-nginx -n ingress-nginx --timeout=300s
           else
