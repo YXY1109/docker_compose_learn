@@ -72,9 +72,9 @@ jobs:
           if [ "$NS_STATUS" == "Terminating" ]; then
             echo "Namespace ingress-nginx is terminating, cleaning up..."
             # 强制清理 namespace
-            kubectl get namespace ingress-nginx -o json > tmp.json
+            kubectl --insecure-skip-tls-verify get namespace ingress-nginx -o json > tmp.json
             sed -i 's/"finalizers": \[.*\]/ "finalizers": []/' tmp.json
-            kubectl replace --raw "/api/v1/namespaces/ingress-nginx/finalize" -f ./tmp.json
+            kubectl --insecure-skip-tls-verify replace --raw "/api/v1/namespaces/ingress-nginx/finalize" -f ./tmp.json
             sleep 10
           fi
           
