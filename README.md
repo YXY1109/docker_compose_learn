@@ -26,7 +26,9 @@ docker构建镜像，docker-compose运行服务，k8s集群部署
 
 将sanic服务器运行在k8s集群中，代码保存到github，通过actions 自动部署到k8s集群
 
-### 使用UV
+### 使用uv
+
+主要是针对k8s_sanic目录的
 
 - 没有pyproject.toml文件
     - uv init
