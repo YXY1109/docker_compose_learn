@@ -444,7 +444,7 @@ spec:
         - name: LD_PRELOAD
           value: /usr/local/lib/libmimalloc.so
 #        image: registry.k8s.io/ingress-nginx/controller:v1.13.3@sha256:1b044f6dcac3afbb59e05d98463f1dec6f3d3fb99940bc12ca5d80270358e3bd
-        image: mirror.ccs.tencentyun.com/ingress-nginx/controller:v1.13.3
+        image: registry.cn-hangzhou.aliyuncs.com/google_containers/controller:v1.13.3
         imagePullPolicy: IfNotPresent
         lifecycle:
           preStop:
@@ -548,7 +548,7 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
 #        image: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.3@sha256:3d671cf20a35cd94efc5dcd484970779eb21e7938c98fbc3673693b8a117cf39
-        image: mirror.ccs.tencentyun.com/ingress-nginx/kube-webhook-certgen:v1.6.3
+        image: registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen:v1.6.3
         imagePullPolicy: IfNotPresent
         name: create
         securityContext:
@@ -605,7 +605,7 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
 #        image: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.3@sha256:3d671cf20a35cd94efc5dcd484970779eb21e7938c98fbc3673693b8a117cf39
-        image: mirror.ccs.tencentyun.com/ingress-nginx/kube-webhook-certgen:v1.6.3
+        image: registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen:v1.6.3
         imagePullPolicy: IfNotPresent
         name: patch
         securityContext:

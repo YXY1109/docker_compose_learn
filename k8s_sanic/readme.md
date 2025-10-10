@@ -62,7 +62,7 @@ kubectl -n ingress-nginx delete daemonset --all
 
 查看ingress-nginx控制器的pod：
 kubectl -n ingress-nginx get pods
-kubectl describe pod ingress-nginx-admission-create-blfhf -n ingress-nginx
+kubectl describe pod ingress-nginx-controller-6bd897b9d4-qnjpc -n ingress-nginx
 
 ```
 
