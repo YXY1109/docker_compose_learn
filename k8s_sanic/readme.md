@@ -40,6 +40,30 @@ kubectl delete -f ingress-nginx-deploy.yaml   # 如果之前部署过
 kubectl apply -f ingress-nginx-deploy.yaml
 
 kubectl get ns ingress-nginx
+
+
+强制删除：
+kubectl get ns ingress-nginx -o json > ingress-nginx.json
+vi ingress-nginx.json
+将："spec": {
+  "finalizers": [
+    "kubernetes"
+  ]
+}
+改为："spec": {}
+kubectl replace --raw "/api/v1/namespaces/ingress-nginx/finalize" -f ./ingress-nginx.json
+
+kubectl -n ingress-nginx get all
+kubectl -n ingress-nginx delete pods --all
+kubectl -n ingress-nginx delete svc --all
+kubectl -n ingress-nginx delete deploy --all
+kubectl -n ingress-nginx delete daemonset --all
+
+
+查看ingress-nginx控制器的pod：
+kubectl -n ingress-nginx get pods
+kubectl describe pod ingress-nginx-admission-create-blfhf -n ingress-nginx
+
 ```
 
 ```
