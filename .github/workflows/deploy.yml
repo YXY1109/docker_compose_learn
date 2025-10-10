@@ -66,6 +66,18 @@ jobs:
         run: |
           cd k8s_sanic/k8s
           
+          # 检查 ingress-nginx namespace 状态
+          NS_STATUS=$(kubectl --insecure-skip-tls-verify get namespace ingress-nginx -o jsonpath='{.status.phase}' 2>/dev/null || echo "NotFound")
+          
+          if [ "$NS_STATUS" == "Terminating" ]; then
+            echo "Namespace ingress-nginx is terminating, cleaning up..."
+            # 强制清理 namespace
+            kubectl get namespace ingress-nginx -o json > tmp.json
+            sed -i 's/"finalizers": \[.*\]/ "finalizers": []/' tmp.json
+            kubectl replace --raw "/api/v1/namespaces/ingress-nginx/finalize" -f ./tmp.json
+            sleep 10
+          fi
+          
           # 判断 ingress-nginx 是否已经部署
           if ! kubectl --insecure-skip-tls-verify get deployment -n ingress-nginx ingress-nginx-controller >/dev/null 2>&1; then
             echo "ingress-nginx not found, deploying now..."
