@@ -28,7 +28,10 @@ docker构建镜像，docker-compose运行服务，k8s集群部署
 
 ### 使用UV
 
-uv init
-uv venv .venv --python 3.11
-uv add sanic
-如果未切换虚拟环境，会自动创建虚拟环境.venv
+- 没有pyproject.toml文件
+    - uv init
+    - uv venv .venv --python 3.11
+    - uv add sanic(如果未切换虚拟环境，会自动创建虚拟环境.venv)
+- 已有pyproject.toml文件
+    - pip install uv
+    - uv sync
