@@ -65,30 +65,8 @@ jobs:
       - name: Deploy to K8s
         run: |
           cd k8s_sanic/k8s
-          
-          # 检查 ingress-nginx namespace 状态
-          NS_STATUS=$(kubectl --insecure-skip-tls-verify get namespace ingress-nginx -o jsonpath='{.status.phase}' 2>/dev/null || echo "NotFound")
-          
-          if [ "$NS_STATUS" == "Terminating" ]; then
-            echo "Namespace ingress-nginx is terminating, cleaning up..."
-            # 强制清理 namespace
-            kubectl --insecure-skip-tls-verify get namespace ingress-nginx -o json > tmp.json
-            sed -i 's/"finalizers": \[.*\]/ "finalizers": []/' tmp.json
-            kubectl --insecure-skip-tls-verify replace --raw "/api/v1/namespaces/ingress-nginx/finalize" -f ./tmp.json
-            sleep 10
-          fi
-          
-          # 判断 ingress-nginx 是否已经部署
-          if ! kubectl --insecure-skip-tls-verify get deployment -n ingress-nginx ingress-nginx-controller >/dev/null 2>&1; then
-            echo "ingress-nginx not found, deploying now..."
-            kubectl --insecure-skip-tls-verify apply -f ingress-nginx-deploy.yaml
-            # 等待 ingress-nginx 运行
-            kubectl --insecure-skip-tls-verify wait --for=condition=ready pod -l app.kubernetes.io/name=ingress-nginx -n ingress-nginx --timeout=300s
-          else
-            echo "ingress-nginx already exists, skipping deployment."
-          fi
-          
-          # 再部署应用资源
+      
+          # 部署应用资源
           kubectl --insecure-skip-tls-verify apply -f deployment.yaml
           kubectl --insecure-skip-tls-verify apply -f service.yaml
           kubectl --insecure-skip-tls-verify apply -f ingress.yaml

@@ -22,7 +22,7 @@
 ```
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.13.3/deploy/static/provider/cloud/deploy.yaml
 kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.13.3/deploy/static/provider/cloud/deploy.yaml
-以上文件镜像地址是带digest，不走 hosts.toml 重定向规则。所以需要修改文件，一定要删除 @sha256
+以上文件镜像地址是带digest，不走hosts.toml重定向规则。所以需要修改文件，一定要删除 @sha256
 先下载文件，将三处image:替换国内的镜像源
 
 一处：
@@ -35,9 +35,11 @@ image: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.3@sha256:3d671cf2
 改为：
 image: ccr.ccs.tencentyun.com/tkeimages/ingress-nginx-kube-webhook-certgen:v1.6.3
 
-我将deploy.yaml改名为：ingress-nginx-deploy.yaml
-kubectl delete -f deploy.yaml   # 如果之前部署过
-kubectl apply -f deploy.yaml
+将deploy.yaml改名为：ingress-nginx-deploy.yaml
+kubectl delete -f ingress-nginx-deploy.yaml   # 如果之前部署过
+kubectl apply -f ingress-nginx-deploy.yaml
+
+kubectl get ns ingress-nginx
 ```
 
 ```
