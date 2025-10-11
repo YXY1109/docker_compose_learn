@@ -90,3 +90,32 @@ kubectl get po -n=ingress-nginx
 kubectl describe pod ingress-nginx-admission-create-dlmrj -n ingress-nginx
 
 ```
+
+## 处理calico-node notread
+
+```
+kubectl get po -n calico-system
+kubectl delete pod -n calico-system calico-node-27trz
+kubectl delete pod -n calico-system calico-node-7bjvx
+kubectl delete pod -n calico-system calico-node-lfgbn
+
+kubectl describe po calico-node-lfgbn -n calico-system
+
+=================================================
+主节点和子节点都要执行和开放端口的：
+
+Calico 需要节点开启 IPv4/IPv6 转发：
+# 在每个节点执行
+sysctl net.ipv4.ip_forward
+sysctl net.ipv6.conf.all.forwarding
+
+# 如果是 0，需要开启：
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo sysctl -w net.ipv6.conf.all.forwarding=1
+sudo sysctl -p
+
+# 开放端口
+TCP 179（BGP）
+UDP 4789（VXLAN）
+TCP 5473（Typha）
+```
