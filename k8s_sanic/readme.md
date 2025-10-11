@@ -102,3 +102,20 @@ TCP 179（BGP）
 UDP 4789（VXLAN）
 TCP 5473（Typha）
 ```
+
+### ingress-nginx-controller的EXTERNAL-IP状态一直为：<pending>
+
+```
+安装 MetalLB 提供 LoadBalancer 支持
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.15.2/config/manifests/metallb-native.yaml
+kubectl apply -f metallb-native.yaml
+
+#跳过 webhook 校验
+kubectl delete validatingwebhookconfigurations.admissionregistration.k8s.io metallb-webhook-configuration
+
+应用配置
+kubectl apply -f metallb-config.yaml
+
+验证
+kubectl get svc -n ingress-nginx ingress-nginx-controller
+```
