@@ -28,12 +28,12 @@ kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/con
 一处：
 image: registry.k8s.io/ingress-nginx/controller:v1.13.3@sha256:1b044f6dcac3afbb59e05d98463f1dec6f3d3fb99940bc12ca5d80270358e3bd
 改为：
-image: ccr.ccs.tencentyun.com/tkeimages/ingress-nginx-controller:v1.13.3
+image: registry.cn-hangzhou.aliyuncs.com/google_containers/nginx-ingress-controller:v1.13.3
 
 两处：
 image: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.3@sha256:3d671cf20a35cd94efc5dcd484970779eb21e7938c98fbc3673693b8a117cf39
 改为：
-image: ccr.ccs.tencentyun.com/tkeimages/ingress-nginx-kube-webhook-certgen:v1.6.3
+image: registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen:v1.6.3
 
 将deploy.yaml改名为：ingress-nginx-deploy.yaml
 kubectl delete -f ingress-nginx-deploy.yaml
@@ -63,7 +63,6 @@ kubectl -n ingress-nginx delete daemonset --all
 查看ingress-nginx控制器的pod：
 kubectl -n ingress-nginx get pods
 kubectl describe pod ingress-nginx-admission-create-p856l -n ingress-nginx
-
 ```
 
 ```
