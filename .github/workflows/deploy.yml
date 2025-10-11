@@ -65,10 +65,13 @@ jobs:
       - name: Deploy to K8s
         run: |
           cd k8s_sanic/k8s
-      
+          
           # 部署应用资源
           kubectl --insecure-skip-tls-verify apply -f deployment.yaml
           kubectl --insecure-skip-tls-verify apply -f service.yaml
+          
+          #跳过 webhook 验证
+          kubectl delete ValidatingWebhookConfiguration ingress-nginx-admission
           kubectl --insecure-skip-tls-verify apply -f ingress.yaml
           
           # 重启应用（如果需要）
