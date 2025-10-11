@@ -17,7 +17,7 @@
 2. 复制整个秘钥，粘贴到github的KUBE_CONFIG中
 3. 需要将内网IP地址替换成公网IP
 
-### 安装ingress-nginx
+### 安装Nginx Ingress Controller
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.13.3/deploy/static/provider/cloud/deploy.yaml
@@ -36,13 +36,18 @@ image: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.3@sha256:3d671cf2
 image: registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen:v1.6.3
 
 将deploy.yaml改名为：ingress-nginx-deploy.yaml
-kubectl delete -f ingress-nginx-deploy.yaml
+安装：
 kubectl apply -f ingress-nginx-deploy.yaml
 
+#查看
 kubectl get ns ingress-nginx
+kubectl get pods -n ingress-nginx
+kubectl describe pod ingress-nginx-admission-create-p856l -n ingress-nginx
 
+#普通删除
+kubectl delete -f ingress-nginx-deploy.yaml
 
-强制删除：
+#强制删除：
 kubectl get ns ingress-nginx -o json > ingress-nginx.json
 vi ingress-nginx.json
 将："spec": {
@@ -58,12 +63,9 @@ kubectl -n ingress-nginx delete pods --all
 kubectl -n ingress-nginx delete svc --all
 kubectl -n ingress-nginx delete deploy --all
 kubectl -n ingress-nginx delete daemonset --all
-
-
-查看ingress-nginx控制器的pod：
-kubectl -n ingress-nginx get pods
-kubectl describe pod ingress-nginx-admission-create-p856l -n ingress-nginx
 ```
+
+### 验证安装Nginx Ingress Controller成功与否
 
 ```
 验证ingress是否创建成功：
@@ -72,36 +74,18 @@ kubectl get ingress sanic-app-ingress
 查看ingress-nginx控制器的外部IP：
 kubectl get svc -n ingress-nginx
 
-找到ingress-nginx-controller服务，查看其EXTERNAL-IP列的值，这应该就是您可以用来访问服务的IP地址。
-
-访问服务： 由于您没有配置域名，可以直接使用ingress-nginx控制器的外部IP地址在浏览器中访问您的服务。
-这样配置后，您就可以通过主节点的公网IP访问部署在Kubernetes集群中的sanic应用了。
-
-删除po：
-kubectl delete pod ingress-nginx-admission-create-ndpwb -n ingress-nginx
-kubectl delete pod ingress-nginx-admission-patch-q2nh7 -n ingress-nginx
-kubectl delete pod ingress-nginx-controller-69f6c6b89d-h5wmc -n ingress-nginx
-
-查看po：
-kubectl get po -n=ingress-nginx
-
-查看po日志：
-kubectl describe pod ingress-nginx-admission-create-dlmrj -n ingress-nginx
-
 ```
 
-## 处理calico-node notread
+### 处理calico-node not ready
 
 ```
 kubectl get po -n calico-system
 kubectl delete pod -n calico-system calico-node-27trz
 kubectl delete pod -n calico-system calico-node-7bjvx
 kubectl delete pod -n calico-system calico-node-lfgbn
-
 kubectl describe po calico-node-lfgbn -n calico-system
 
-=================================================
-主节点和子节点都要执行和开放端口的：
+# 主节点和子节点都要执行和开放端口的：
 
 Calico 需要节点开启 IPv4/IPv6 转发：
 # 在每个节点执行
