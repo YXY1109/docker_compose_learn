@@ -36,7 +36,7 @@ image: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.6.3@sha256:3d671cf2
 image: ccr.ccs.tencentyun.com/tkeimages/ingress-nginx-kube-webhook-certgen:v1.6.3
 
 将deploy.yaml改名为：ingress-nginx-deploy.yaml
-kubectl delete -f ingress-nginx-deploy.yaml   # 如果之前部署过
+kubectl delete -f ingress-nginx-deploy.yaml
 kubectl apply -f ingress-nginx-deploy.yaml
 
 kubectl get ns ingress-nginx
@@ -62,7 +62,7 @@ kubectl -n ingress-nginx delete daemonset --all
 
 查看ingress-nginx控制器的pod：
 kubectl -n ingress-nginx get pods
-kubectl describe pod ingress-nginx-controller-6bd897b9d4-qnjpc -n ingress-nginx
+kubectl describe pod ingress-nginx-admission-create-p856l -n ingress-nginx
 
 ```
 

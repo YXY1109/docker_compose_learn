@@ -10,7 +10,7 @@ app = Sanic(__name__)
 async def index(request):
     # 获取当前时间的年月日时分秒
     formatted_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    return json({"message": f"7Hello from Sanic on K8s!：{formatted_time}"})
+    return json({"message": f"8Hello from Sanic on K8s!：{formatted_time}"})
 
 
 if __name__ == "__main__":
