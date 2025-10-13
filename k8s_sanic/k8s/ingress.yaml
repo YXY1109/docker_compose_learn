@@ -11,6 +11,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: sanic-app
+                name: sanic-app-service
                 port:
                   number: 80
