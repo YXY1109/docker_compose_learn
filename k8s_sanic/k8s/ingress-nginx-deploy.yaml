@@ -509,24 +509,6 @@ spec:
         kubernetes.io/os: linux
       serviceAccountName: ingress-nginx
       terminationGracePeriodSeconds: 300
-      tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            preference:
-              matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                - k8s-worker1
-                - k8s-worker2
       volumes:
       - name: webhook-cert
         secret:
