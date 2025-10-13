@@ -1,42 +1,45 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sanic-app
-  labels: #标签，可以灵活定位一个或多个资源，其中key和value均可自定义，可以定义多组，目前不需要理解
-    app: sanic-app
+  name: sanic-app-deployment # Deployment名称
+  labels: # 标签，可以灵活定位一个或多个资源，其中key和value均可自定义，可以定义多组
+    app: sanic-app # Deployment标签
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
-      app: sanic-app
+      app: sanic-app # 匹配Pod标签
+  strategy:
+    rollingUpdate:
+      maxSurge: 2 # 滚动更新时最大可超出的副本数
+      maxUnavailable: 0 # 滚动更新时最大不可用副本数
+    type: RollingUpdate # 滚动更新策略（避免服务中断）
   template:
     metadata:
       labels:
-        app: sanic-app
+        app: sanic-app # Pod标签
     spec:
       containers:
-        - name: sanic-app
-          image: yxy1109/k8s-sanic:latest
+        - name: sanic-app-container
+          image: yxy1109/k8s-sanic:latest # dockerhub镜像
           ports:
-            - containerPort: 8000
-          resources:
-            requests:
+            - containerPort: 8000 # 容器端口
+          resources: # 资源限制
+            requests: # 最小资源
               cpu: "100m"
               memory: "128Mi"
-            limits:
+            limits: #最大资源
               cpu: "500m"
               memory: "256Mi"
-          # 健康检查
-          livenessProbe: #存活探针
+          livenessProbe: # 存活探针(健康检查)
             httpGet:
               path: /
               port: 8000
-            initialDelaySeconds: 10   # 应用启动时间
-            periodSeconds: 10
+            initialDelaySeconds: 10   # 启动后延迟检查时间
+            periodSeconds: 10 # 检查间隔时间
             timeoutSeconds: 2
             failureThreshold: 3
-
-          readinessProbe: #就绪探针
+          readinessProbe: # 就绪探针(是否可接收请求)
             httpGet:
               path: /
               port: 8000
