@@ -5,8 +5,10 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # 设置Python环境变量
-ENV PYTHONDONTWRITEBYTECODE=1  # 不生成pyc文件
-ENV PYTHONUNBUFFERED=1          # 实时输出stdout/stderr
+# 不生成pyc文件
+ENV PYTHONDONTWRITEBYTECODE=1
+# 实时输出stdout/stderr
+ENV PYTHONUNBUFFERED=1
 
 # 复制依赖文件并安装
 COPY requirements.txt .
