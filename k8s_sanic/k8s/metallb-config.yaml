@@ -15,3 +15,7 @@ metadata:
 spec:
   ipAddressPools:
   - sanic-pool
+  # 添加nodeSelectors以确保所有节点都能参与负载均衡
+  nodeSelectors:
+  - matchLabels:
+      kubernetes.io/os: linux

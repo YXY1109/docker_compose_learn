@@ -2,6 +2,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: sanic-app-ingress
+  annotations:
+    # 添加这些注解以确保Ingress Controller正确处理NodePort服务
+    nginx.ingress.kubernetes.io/service-upstream: "true"
 spec:
   ingressClassName: nginx
   rules:

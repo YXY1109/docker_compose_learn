@@ -8,4 +8,5 @@ spec:
   ports:
   - port: 80
     targetPort: 8000
-  type: ClusterIP
+    # 添加NodePort类型，以便可以通过任何节点IP访问
+  type: NodePort
