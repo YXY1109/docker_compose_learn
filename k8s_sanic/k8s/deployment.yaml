@@ -46,7 +46,7 @@ spec:
             httpGet:
               path: /health
               port: 8000
-            initialDelaySeconds: 15 # 容器启动后延迟 10 秒再开始第一次健康检查
+            initialDelaySeconds: 15 # 容器启动后延迟 15 秒再开始第一次健康检查
             periodSeconds: 15 # 每次健康检查的间隔时间（秒）
             timeoutSeconds: 5 # 探针请求超时时间（秒）
             failureThreshold: 5 # 连续失败多少次后，判定容器不健康
@@ -56,6 +56,7 @@ spec:
             httpGet:
               path: /health
               port: 8000
-            initialDelaySeconds: 5 # 启动后延迟 5 秒开始第一次检查
-            periodSeconds: 5  # 每 5 秒检查一次
-            timeoutSeconds: 2  # 超时时间 2 秒
+            initialDelaySeconds: 10 # 启动后延迟 10 秒开始第一次检查
+            periodSeconds: 10  # 每 10 秒检查一次
+            timeoutSeconds: 5  # 超时时间 5 秒
+            failureThreshold: 3 # 连续失败 3 次判定不就绪
