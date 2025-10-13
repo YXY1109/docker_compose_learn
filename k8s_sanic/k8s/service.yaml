@@ -9,4 +9,4 @@ spec:
     - port: 80 # Service端口
       targetPort: 8000 # 容器端口
       protocol: TCP
-  type: NodePort #服务类型：ClusterIP NodePort LoadBalancer
+  type: LoadBalancer #服务类型：ClusterIP NodePort LoadBalancer
