@@ -1,10 +1,13 @@
 # 使用官方 Python 镜像
 FROM python:3.11-slim
 
+# 设置时区
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # 设置工作目录
 WORKDIR /app
 
-# 设置Python环境变量
 # 不生成pyc文件
 ENV PYTHONDONTWRITEBYTECODE=1
 # 实时输出stdout/stderr
