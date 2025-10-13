@@ -42,7 +42,7 @@ kubectl apply -f ingress-nginx-deploy.yaml
 #查看
 kubectl get ns ingress-nginx
 kubectl get pods -n ingress-nginx
-kubectl get pod -n ingress-nginx -o wide
+kubectl get pods -n ingress-nginx -o wide
 kubectl describe pod ingress-nginx-admission-create-p856l -n ingress-nginx
 
 #普通删除
