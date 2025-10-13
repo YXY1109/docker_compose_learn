@@ -5,7 +5,7 @@ metadata:
   labels: # 标签，可以灵活定位一个或多个资源，其中key和value均可自定义，可以定义多组
     app: sanic-app # Deployment标签
 spec:
-  replicas: 3
+  replicas: 4
   selector:
     matchLabels:
       app: sanic-app # 匹配Pod标签
@@ -26,23 +26,36 @@ spec:
             - containerPort: 8000 # 容器端口
           resources: # 资源限制
             requests: # 最小资源
-              cpu: "100m"
-              memory: "128Mi"
+              cpu: "200m"
+              memory: "256Mi"
             limits: #最大资源
               cpu: "500m"
-              memory: "256Mi"
-          livenessProbe: # 存活探针(健康检查)
+              memory: "512Mi"
+          # 启动探针（startupProbe）
+          # 作用：在应用完全启动好之前，不会让存活探针和就绪探针去干扰
+          # 适用场景：启动时间不确定或可能很长的应用
+          startupProbe:
             httpGet:
               path: /health
               port: 8000
-            initialDelaySeconds: 10   # 启动后延迟检查时间
-            periodSeconds: 10 # 检查间隔时间
-            timeoutSeconds: 2
-            failureThreshold: 3
-          readinessProbe: # 就绪探针(是否可接收请求)
+            failureThreshold: 30   # 失败多少次才认定启动失败
+            periodSeconds: 10      # 每 10 秒检查一次
+          # 存活探针，健康检查（livenessProbe）
+          # 作用：运行中检测，如果失败会重启容器
+          livenessProbe:
             httpGet:
               path: /health
               port: 8000
-            initialDelaySeconds: 5
-            periodSeconds: 5
-            timeoutSeconds: 2
+            initialDelaySeconds: 15 # 容器启动后延迟 10 秒再开始第一次健康检查
+            periodSeconds: 15 # 每次健康检查的间隔时间（秒）
+            timeoutSeconds: 5 # 探针请求超时时间（秒）
+            failureThreshold: 5 # 连续失败多少次后，判定容器不健康
+          # 就绪探针（readinessProbe）
+          # 作用：只有成功时，Pod 才会进入 Ready 状态，Service 才会转发流量
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5 # 启动后延迟 5 秒开始第一次检查
+            periodSeconds: 5  # 每 5 秒检查一次
+            timeoutSeconds: 2  # 超时时间 2 秒
