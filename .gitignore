@@ -207,3 +207,4 @@ marimo/_lsp/
 __marimo__/
 /bge_web/models/
 .idea
+/.claude/

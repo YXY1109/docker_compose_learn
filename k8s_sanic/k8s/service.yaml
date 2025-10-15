@@ -2,6 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: sanic-app-service  # Service名称
+  annotations:
+    # 启用会话亲和性，提高连接稳定性
+    service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
 spec:
   selector:
     app: sanic-app # 匹配Pod标签
@@ -10,4 +13,6 @@ spec:
       targetPort: 8000 # 容器端口
       protocol: TCP
       nodePort: 30080
+  # 确保流量直接发送到目标节点，避免额外的网络跳转
+  externalTrafficPolicy: Local
   type: NodePort #服务类型：ClusterIP NodePort LoadBalancer
