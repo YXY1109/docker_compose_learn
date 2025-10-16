@@ -1,23 +1,40 @@
+# 腾讯云环境优化Ingress配置
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: sanic-app-ingress
+  namespace: default
   annotations:
-    # 启用会话亲和性，提高连接稳定性
+    # 会话亲和性
     nginx.ingress.kubernetes.io/affinity: "cookie"
     nginx.ingress.kubernetes.io/session-cookie-name: "sanic-affinity"
     nginx.ingress.kubernetes.io/session-cookie-max-age: "3600"
-    # 设置超时时间
+
+    # 超时配置（适配腾讯云网络环境）
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-    # 启用重试机制
+
+    # 重试机制
     nginx.ingress.kubernetes.io/retry-number: "3"
     nginx.ingress.kubernetes.io/retry-interval: "5"
-    # 启用连接保持
+
+    # 连接保持优化
     nginx.ingress.kubernetes.io/upstream-keepalive-connections: "100"
     nginx.ingress.kubernetes.io/upstream-keepalive-requests: "10000"
     nginx.ingress.kubernetes.io/upstream-keepalive-timeout: "60"
+
+    # 腾讯云特定优化
+    nginx.ingress.kubernetes.io/rewrite-target: "/"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+
+    # 客户端IP传递（重要：用于获取真实客户端IP）
+    nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+    nginx.ingress.kubernetes.io/compute-full-forwarded-for: "true"
+
+    # 大文件上传支持（如需要）
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
 spec:
   ingressClassName: nginx
   rules:
