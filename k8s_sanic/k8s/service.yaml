@@ -1,24 +1,10 @@
-# 腾讯云CLB优化配置
+# EIP+CLB+Ingress架构优化配置
 apiVersion: v1
 kind: Service
 metadata:
   name: sanic-app-service
-  namespace: default
-  annotations:
-    # 会话亲和性注解
-    service.kubernetes.io/qcloud-loadbalancer-session-affinity-option: "enabled"
-    service.kubernetes.io/qcloud-loadbalancer-session-affinity-timeout: "3600"
-
-    # 健康检查配置（可选，CLB端配置更准确）
-    service.kubernetes.io/qcloud-loadbalancer-health-check-flag: "on"
-    service.kubernetes.io/qcloud-loadbalancer-health-check-interval: "5"
-    service.kubernetes.io/qcloud-loadbalancer-health-check-timeout: "3"
-    service.kubernetes.io/qcloud-loadbalancer-health-check-num-threshold: "3"
-    service.kubernetes.io/qcloud-loadbalancer-health-check-http-code: "2xx,3xx"
-    service.kubernetes.io/qcloud-loadbalancer-health-check-http-path: "/health"
-
-    # 保留MetalLB兼容性（如果同时使用）
-    metallb.universe.tf/address-pool: public-pool
+  labels:
+    app: sanic-app
 spec:
   selector:
     app: sanic-app
@@ -27,10 +13,5 @@ spec:
       port: 80
       targetPort: 8000
       protocol: TCP
-      nodePort: 30080  # 明确指定NodePort
-  type: LoadBalancer
-  externalTrafficPolicy: Local  # 保持客户端源IP
-  sessionAffinity: ClientIP
-  sessionAffinityConfig:
-    clientIP:
-      timeoutSeconds: 3600
+  type: ClusterIP  # ClusterIP类型，只供集群内部访问
+  sessionAffinity: None  # 不在这里做会话保持，在Ingress层处理
