@@ -91,12 +91,21 @@ sudo sysctl --system
 ```
 创建目录：sudo mkdir -p /etc/containerd/certs.d/docker.io/
 创建hosts文件：vi /etc/containerd/certs.d/docker.io/hosts.toml
-将一下内容输入到hosts.toml文件中：
-```
-
-```
 # 仓库地址（默认官方地址）
 server = "https://docker.io"
+
+# 配置镜像加速器（可选，例如添加国内镜像源）
+[host."https://mirror.ccs.tencentyun.com"]
+  capabilities = ["pull", "resolve"]  # 支持拉取和解析镜像
+
+==============================================================
+
+创建目录：sudo mkdir -p /etc/containerd/certs.d/registry.k8s.io/
+创建hosts文件：vi /etc/containerd/certs.d/registry.k8s.io/hosts.toml
+将一下内容输入到hosts.toml文件中：
+
+# 仓库地址（默认官方地址）
+server = "https://registry.k8s.io"
 
 # 配置镜像加速器（可选，例如添加国内镜像源）
 [host."https://mirror.ccs.tencentyun.com"]
@@ -106,6 +115,7 @@ server = "https://docker.io"
 - 安装runc：
 
 ```
+apt update
 apt install -y runc
 runc --version
 ```
@@ -176,7 +186,7 @@ sudo kubeadm config images pull \
 
 ![主节点拉镜像](images/主节点拉镜像.png)
 
-- 主节点初始化集群
+- 主节点初始化集群，需要提前开放6443端口
 
 ```
 sudo kubeadm init \
@@ -213,18 +223,21 @@ systemctl restart kubelet
 - 节点加入集群，记得放开主节点的6443端口
 
 ```
-kubeadm join 10.6.0.9:6443 --token 8q4uf1.dg3yps2u0mzklrrg \
-	--discovery-token-ca-cert-hash sha256:7fad6904ed64b8ee7430253c85981291f88b1f3ee02d61c42bdd638ea52d9535 \
+kubeadm join 10.6.0.9:6443 --token avt1q9.2eyy1t3n5p4b1sdm \
+	--discovery-token-ca-cert-hash sha256:f5a9083de14b18e974dd298fa24c6fde6e0e8224ff0ef3a4a5a9b0ae43bc5a46 \
         --cri-socket=unix:///var/run/containerd/containerd.sock -v=10
 ```
 
 ![](images/子节点加入集群.png)
 
-- master安装calico网络插件
+- master部署calico网络插件
 
 ```
+官方文档：https://docs.tigera.io/calico/latest/getting-started/kubernetes/quickstart
+
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/tigera-operator.yaml
 kubectl create -f tigera-operator.yaml
+
 curl -LO https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/custom-resources.yaml
 sed -i 's/cidr: 192.168.0.0/cidr: 10.244.0.0/g' custom-resources.yaml
 kubectl create -f custom-resources.yaml
@@ -248,6 +261,7 @@ kubectl wait --for=delete namespace/calico-system --timeout=60s
     - 刚开始安装集群的时候，参考现有文章，一步一个脚印，有问题就问豆包和kimi，最后发现如果网络OK，都是些小问题。
 
 ![](images/集群安装成功.png)
+![](images/集群安装成功2.png)
 
 
 
