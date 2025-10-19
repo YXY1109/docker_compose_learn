@@ -2,7 +2,8 @@
 
 ## 📋 项目概述
 
-本项目展示如何将基于Sanic 25.3.0框架的高性能异步Python Web应用部署到Kubernetes集群，实现完整的CI/CD自动化流水线。项目包含容器化、Kubernetes编排、Ingress暴露和自动化部署等云原生最佳实践。
+本项目展示如何将基于Sanic 25.3.0框架的高性能异步Python
+Web应用部署到Kubernetes集群，实现完整的CI/CD自动化流水线。项目包含容器化、Kubernetes编排、Ingress暴露和自动化部署等云原生最佳实践。
 
 ### 🎯 应用特点
 
@@ -50,24 +51,28 @@ k8s_sanic/
 ## 🚀 核心技术特性
 
 ### 🐍 应用层特性
+
 - **Sanic 25.3.0**: 高性能异步Web框架
 - **结构化日志**: 完整的请求ID追踪和响应时间记录
 - **健康检查**: `/health` 端点用于服务状态监控
 - **生产配置**: Keep-alive 75s，超时60s，监听 0.0.0.0:8000
 
 ### 🐳 容器化特性
+
 - **轻量级镜像**: 基于 `python:3.11-slim`
 - **时区优化**: `Asia/Shanghai` 时区设置
 - **环境优化**: 不生成pyc文件，实时日志输出
 - **安全配置**: 非特权用户运行
 
 ### ☸️ Kubernetes特性
+
 - **4副本部署**: 高可用性配置
 - **完整健康检查**: 启动探针(30次)、存活探针(3次)、就绪探针(2次)
 - **资源限制**: CPU 200m-500m，内存 256Mi-512Mi
 - **滚动更新**: 零停机部署策略
 
 ### 🌐 网络架构特性
+
 - **云负载均衡**: 腾讯云CLB提供高可用负载均衡
 - **弹性公网IP**: EIP提供稳定的公网访问入口
 - **Ingress会话保持**: Cookie-based，1小时有效期
@@ -76,6 +81,7 @@ k8s_sanic/
 - **VPC网络**: 腾讯云私有网络保障网络安全
 
 ### 🔄 CI/CD特性
+
 - **自动化触发**: main分支k8s_sanic目录变更或手动触发
 - **多阶段构建**: Docker Buildx优化，支持缓存加速
 - **时戳标签**: 基于部署时间生成版本标签 (格式: YYYYMMDD-HHMMSS)
@@ -86,10 +92,10 @@ k8s_sanic/
 
 ### 🔗 端点列表
 
-| 方法 | 端点 | 描述 | 响应格式 |
-|------|------|------|----------|
-| GET | `/` | 主页端点，返回问候消息和时间戳 | JSON |
-| GET | `/health` | 健康检查端点，用于服务监控 | JSON |
+| 方法  | 端点        | 描述              | 响应格式 |
+|-----|-----------|-----------------|------|
+| GET | `/`       | 主页端点，返回问候消息和时间戳 | JSON |
+| GET | `/health` | 健康检查端点，用于服务监控   | JSON |
 
 ### 📝 接口详情
 
@@ -98,6 +104,7 @@ k8s_sanic/
 **请求**: `GET /`
 
 **响应示例**:
+
 ```json
 {
   "message": "Hello from Sanic on K8s!",
@@ -111,6 +118,7 @@ k8s_sanic/
 **请求**: `GET /health`
 
 **响应示例**:
+
 ```json
 {
   "status": "healthy",
@@ -131,8 +139,8 @@ k8s_sanic/
 - **云平台**: 腾讯云TKE或自建K8s集群
 - **Kubernetes版本**: 1.20+
 - **网络组件**:
-  - Calico CNI网络插件
-  - nginx-ingress Controller
+    - Calico CNI网络插件
+    - nginx-ingress Controller
 - **负载均衡**: 腾讯云CLB (负载均衡服务)
 - **公网访问**: EIP (弹性公网IP)
 
@@ -175,12 +183,12 @@ TCP 443    # HTTPS访问
 
 在腾讯云控制台提前准备以下资源：
 
-| 资源类型 | 说明 | 配置建议 |
-|---------|------|----------|
-| **VPC** | 私有网络 | 与K8s集群同VPC |
-| **CLB** | 负载均衡 | 公网类型，支持HTTP/HTTPS |
-| **EIP** | 弹性公网IP | 绑定到CLB提供公网访问 |
-| **子网** | 网络子网 | 确保与K8s节点网络互通 |
+| 资源类型    | 说明     | 配置建议              |
+|---------|--------|-------------------|
+| **VPC** | 私有网络   | 与K8s集群同VPC        |
+| **CLB** | 负载均衡   | 公网类型，支持HTTP/HTTPS |
+| **EIP** | 弹性公网IP | 绑定到CLB提供公网访问      |
+| **子网**  | 网络子网   | 确保与K8s节点网络互通      |
 
 ### 5. GitHub Secrets配置
 
@@ -195,12 +203,14 @@ TCP 443    # HTTPS访问
 ### 📋 GitHub Actions工作流流程
 
 **触发条件**:
+
 - 推送到main分支且影响 `k8s_sanic/` 目录的文件变更
 - 手动触发 (workflow_dispatch)
 
 **工作流位置**: `.github/workflows/deploy.yml` (根目录)
 
 #### 构建阶段 (build-push job)
+
 1. **获取代码** - 检出仓库代码
 2. **设置Buildx** - 配置Docker Buildx构建环境
 3. **登录DockerHub** - 使用Secrets认证
@@ -208,16 +218,18 @@ TCP 443    # HTTPS访问
 5. **构建推送** - 构建镜像并推送到DockerHub (latest + 时间戳标签)
 
 #### 部署阶段 (deploy job)
+
 1. **获取代码** - 检出仓库代码
 2. **安装kubectl** - 使用官方Azure action安装kubectl工具
 3. **配置集群** - 使用kubeconfig连接K8s集群
 4. **应用部署** - 按顺序应用K8s配置文件
-   - deployment.yaml (应用部署)
-   - service.yaml (服务配置)
-   - ingress.yaml (入口路由)
+    - deployment.yaml (应用部署)
+    - service.yaml (服务配置)
+    - ingress.yaml (入口路由)
 5. **重启应用** - 滚动重启deployment确保更新
 
 **特殊配置**:
+
 - 使用 `--insecure-skip-tls-verify` 跳过TLS验证适配云环境
 - 跳过ingress webhook验证避免云环境冲突
 - 利用GitHub Actions缓存加速构建过程
@@ -322,11 +334,37 @@ kubectl exec -it deployment/sanic-app-deployment -- /bin/bash
 cd k8s_sanic/k8s
 
 # 部署nginx-ingress Controller
+# 文档：https://kubernetes.github.io/ingress-nginx/deploy/
+
+# 方式一1：kubectl apply
+# 开放 8443 端口
+crictl pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen:v1.6.3
+crictl pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-webhook-certgen:v1.6.3
 kubectl apply -f ingress-nginx-deploy.yaml
 
 # 验证部署状态
 kubectl get pods -n ingress-nginx
 kubectl get svc -n ingress-nginx
+
+#普通删除
+kubectl delete -f ingress-nginx-deploy.yaml
+
+#强制删除：
+kubectl get ns ingress-nginx -o json > ingress-nginx.json
+vi ingress-nginx.json
+将："spec": {
+  "finalizers": [
+    "kubernetes"
+  ]
+}
+改为："spec": {}
+kubectl replace --raw "/api/v1/namespaces/ingress-nginx/finalize" -f ./ingress-nginx.json
+
+kubectl -n ingress-nginx get all
+kubectl -n ingress-nginx delete pods --all
+kubectl -n ingress-nginx delete svc --all
+kubectl -n ingress-nginx delete deploy --all
+kubectl -n ingress-nginx delete daemonset --all
 ```
 
 **说明**: 项目已提供适配腾讯云环境的ingress-nginx部署文件，使用阿里云镜像源解决网络访问问题。
@@ -349,17 +387,17 @@ kubectl logs -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx
 #### 1. 在腾讯云控制台操作
 
 1. **创建CLB负载均衡**
-   - 选择公网负载均衡
-   - 网络类型选择与K8s集群相同的VPC
-   - 监听器配置HTTP(80)和HTTPS(443)
+    - 选择公网负载均衡
+    - 网络类型选择与K8s集群相同的VPC
+    - 监听器配置HTTP(80)和HTTPS(443)
 
 2. **绑定EIP**
-   - 为CLB绑定弹性公网IP
-   - 确保EIP有足够的带宽
+    - 为CLB绑定弹性公网IP
+    - 确保EIP有足够的带宽
 
 3. **配置后端服务**
-   - 将Ingress Controller的Service (LoadBalancer类型) 作为后端
-   - 健康检查指向Ingress Controller的端口
+    - 将Ingress Controller的Service (LoadBalancer类型) 作为后端
+    - 健康检查指向Ingress Controller的端口
 
 #### 2. 验证CLB配置
 
@@ -417,6 +455,7 @@ curl -w "@curl-format.txt" -o /dev/null -s http://$CLB_EIP/health
 ```
 
 **创建curl-format.txt文件**:
+
 ```
      time_namelookup:  %{time_namelookup}\n
         time_connect:  %{time_connect}\n

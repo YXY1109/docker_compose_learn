@@ -22,7 +22,7 @@ async def index(request):
     # 获取当前时间的年月日时分秒
     formatted_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     logger.info(f"Request received at {formatted_time}")
-    return json({"message": f"33Hello from Sanic on K8s!：{formatted_time}"})
+    return json({"message": f"34Hello from Sanic on K8s!：{formatted_time}"})
 
 
 @app.get("/health")
