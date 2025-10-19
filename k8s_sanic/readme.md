@@ -194,11 +194,11 @@ TCP 443    # HTTPS访问
 
 在仓库设置中配置以下密钥：
 
-| 密钥名称                 | 描述            | 获取方式                          |
-|----------------------|---------------|-------------------------------|
-| `DOCKERHUB_USERNAME` | DockerHub用户名  | DockerHub账户                   |
-| `DOCKERHUB_TOKEN`    | DockerHub访问令牌 | 账户设置 → Personal Access Tokens |
-| `KUBE_CONFIG`        | K8s集群配置       | `kubectl config view --raw`   |
+| 密钥名称                 | 描述            | 获取方式                                   |
+|----------------------|---------------|----------------------------------------|
+| `DOCKERHUB_USERNAME` | DockerHub用户名  | DockerHub账户                            |
+| `DOCKERHUB_TOKEN`    | DockerHub访问令牌 | 账户设置 → Personal Access Tokens          |
+| `KUBE_CONFIG`        | K8s集群配置       | `kubectl config view --raw`，内网IP改为公网IP |
 
 ### 📋 GitHub Actions工作流流程
 
