@@ -24,14 +24,21 @@ RUN apk add --no-cache \
     libffi-dev \
     gcompat \
     libstdc++ \
-    libgcc
+    libgcc \
+    libwebp-dev \
+    tiff-dev \
+    freetype-dev \
+    lcms2-dev \
+    openjpeg-dev \
+    tk-dev \
+    libimagequant-dev
 
 # Upgrade pip and install wheel for faster compilation
 RUN python -m ensurepip --upgrade && \
     pip install --upgrade pip setuptools wheel
 
 # Install opencv-contrib-python (this is the slow step, isolated in its own stage)
-RUN pip install --prefer-binary --compile opencv-contrib-python==4.10.0.84
+# RUN pip install --prefer-binary --compile opencv-contrib-python==4.10.0.84
 # 测试流程
 RUN pip install pytest isort -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
 
@@ -61,7 +68,14 @@ RUN apk add --no-cache \
     libffi-dev \
     gcompat \
     libstdc++ \
-    libgcc
+    libgcc \
+    libwebp-dev \
+    tiff-dev \
+    freetype-dev \
+    lcms2-dev \
+    openjpeg-dev \
+    tk-dev \
+    libimagequant-dev
 
 # Create non-root user early to leverage layer caching
 RUN addgroup -g 1000 appgroup && \
@@ -94,6 +108,9 @@ COPY requirements.txt ./
 
 # Copy cache and application code in order of change frequency
 # COPY --chown=1000:1000 ai_core/cache /app/data/cache
+
+# Install Pillow first with all its build dependencies available
+RUN pip install Pillow==10.4.0 -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
 
 # Install dependencies in optimal order (less frequently changing first)
 RUN pip install -r requirements.txt -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
