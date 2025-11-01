@@ -31,9 +31,9 @@ RUN python -m ensurepip --upgrade && \
     pip install --upgrade pip setuptools wheel
 
 # Install opencv-contrib-python (this is the slow step, isolated in its own stage)
-RUN pip install opencv-contrib-python==4.10.0.84
+RUN pip install --prefer-binary --compile opencv-contrib-python==4.10.0.84
 # 测试流程
-RUN pip install pytest isort
+RUN pip install pytest isort -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
 
 # Final stage - copy opencv from builder stage
 FROM python:3.11-alpine
@@ -78,13 +78,13 @@ RUN pip show pytest isort
 
 # Upgrade pip and install basic packages
 RUN python -m ensurepip --upgrade && \
-    pip install --upgrade pip setuptools wheel
+    pip install --upgrade pip setuptools wheel -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
 
 # Install specific versions in batches to maximize caching
-RUN pip install safetensors==0.6.2
+RUN pip install safetensors==0.6.2 -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
 
 # Install pypdf last to override any conflicting versions
-RUN pip install pypdf==6.1.3
+RUN pip install pypdf==6.1.3 -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
 
 # setting cl100k_base
 # ENV TIKTOKEN_CACHE_DIR=/app/data/cache/tiktoken_cache \
@@ -96,11 +96,12 @@ COPY requirements.txt ./
 # COPY --chown=1000:1000 ai_core/cache /app/data/cache
 
 # Install dependencies in optimal order (less frequently changing first)
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
 
+RUN pip install numpy==2.3.4 -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
 RUN pip install paddlepaddle==3.2.0 -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
 
-RUN pip install paddleocr[doc-parser]==3.2.0
+RUN pip install paddleocr[doc-parser]==3.2.0 -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
 
 # Copy application code
 COPY --chown=1000:1000 . .
