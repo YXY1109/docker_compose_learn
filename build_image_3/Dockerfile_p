@@ -55,8 +55,8 @@ WORKDIR /app
 COPY --chown=appuser:appgroup . .
 
 # 创建必要的目录
-RUN mkdir -p /app/storage /app/logs /root/.paddlex && \
-    chown -R appuser:appgroup /app /root/.paddlex
+RUN mkdir -p /app/storage /app/logs /root/.paddlex/temp && \
+    chown -R appuser:appgroup /app /root/.paddlex/temp
 
 # 切换到非 root 用户
 USER appuser
