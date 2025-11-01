@@ -52,12 +52,11 @@ RUN groupadd -r appgroup && \
 WORKDIR /app
 
 # 复制应用代码
-COPY --chown=appuser:appgroup requirements.txt ./
 COPY --chown=appuser:appgroup . .
 
 # 创建必要的目录
 RUN mkdir -p /app/storage /app/logs && \
-    chown -R appuser:appgroup /app
+    chown -R appuser:appgroup /app /root/.paddlex
 
 # 切换到非 root 用户
 USER appuser
