@@ -1,8 +1,11 @@
+import os
 from typing import List, Any
 
 from fastapi import FastAPI
 from paddleocr import PPStructureV3
 from pydantic import BaseModel
+
+os.environ['PADDLE_PDX_CACHE_HOME'] = "/app/.paddlex/temp"
 
 app = FastAPI()
 

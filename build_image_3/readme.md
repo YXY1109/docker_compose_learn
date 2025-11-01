@@ -8,11 +8,11 @@ cd /root/code/docker_compose_learn/build_image_3
 
 #构建镜像
 docker build -t paddle_ocr_ppv3:v1.0 .
-docker build -t paddle_ocr_ppv3:v1.1 -f Dockerfile_p .
+docker build -t paddle_ocr_ppv3:v1.3 -f Dockerfile_p .
 
 
 #运行镜像
-docker run -p 5001:5001 paddle_ocr_ppv3:v1.1
+docker run -p 5001:5001 paddle_ocr_ppv3:v1.3
 
 #访问
 curl http://localhost:5000/
