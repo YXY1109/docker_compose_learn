@@ -12,6 +12,7 @@ docker build -t paddle_ocr_ppv3:v1.0 -f Dockerfile_p .
 
 #运行镜像
 docker run -p 5000:5000 paddle_ocr_ppv3:v1.0
+docker run --name paddle_ocr_ppv3 -p 5000:5000 -v /root/code/models:/root/.paddlex -v /root/code/output:/app/output paddle_ocr_ppv3:v1.0
 
 #访问
 curl http://localhost:5000/
