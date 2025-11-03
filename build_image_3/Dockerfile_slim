@@ -1,0 +1,84 @@
+# Multi-stage build to handle opencv compilation timeout
+FROM python:3.12-slim as opencv-builder
+
+# Set build environment for opencv
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+    libglib2.0-0 \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Upgrade pip and install wheel for faster compilation
+RUN python -m ensurepip --upgrade && \
+    pip install --upgrade pip setuptools wheel
+
+# Install opencv-contrib-python (this is the slow step, isolated in its own stage)
+RUN pip install opencv-contrib-python==4.10.0.84
+# 测试流程
+RUN pip install pytest isort
+
+# Final stage - copy opencv from builder stage
+FROM python:3.12-slim
+
+# Set build environment
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install runtime dependencies only (no build tools needed for final image)
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+    libglib2.0-0 \
+    libgomp1 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgthread-2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user early to leverage layer caching
+RUN groupadd -g 1000 appgroup && \
+    useradd -m -s /bin/bash -u 1000 -g appgroup appuser
+
+# Set work directory
+WORKDIR /app
+
+# Copy opencv from builder stage (Debian/Ubuntu Python packages are in /usr/local/lib/python3.12/site-packages/)
+COPY --from=opencv-builder /usr/local/lib/python3.12/site-packages/ /usr/local/lib/python3.12/site-packages/
+
+# 测试流程
+RUN pip show pytest isort
+
+# Upgrade pip and install basic packages
+RUN python -m ensurepip --upgrade && \
+    pip install --upgrade pip setuptools wheel
+
+# Install specific versions in batches to maximize caching
+RUN pip install safetensors==0.6.2
+
+# Install pypdf last to override any conflicting versions
+RUN pip install pypdf==6.1.3
+
+# Copy requirements first for better layer caching
+COPY requirements.txt ./
+
+# Install dependencies in optimal order (less frequently changing first)
+RUN pip install -r requirements.txt
+
+RUN pip install paddlepaddle==3.2.0 -i https://www.paddlepaddle.org.cn/packages/stable/cpu/
+
+RUN pip install paddleocr[doc-parser]==3.2.0
+
+# Copy application code
+COPY --chown=appuser:appgroup . .
+
+# Switch to non-root user using numeric UID (K8s compatible)
+USER 1000:1000
+
+# Expose port
+EXPOSE 5000
+
+# Start application with production settings
+CMD ["python", "start.py"]

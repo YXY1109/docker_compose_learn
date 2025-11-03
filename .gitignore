@@ -208,3 +208,4 @@ __marimo__/
 /bge_web/models/
 .idea
 /.claude/
+/build_image_3/.claude/
