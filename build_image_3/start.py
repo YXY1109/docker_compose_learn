@@ -17,9 +17,6 @@ pipeline = PPStructureV3(
 )
 
 
-class AnalysisResult(BaseModel):
-    result: List[Any]
-
 
 @app.get("/")
 async def root():
@@ -31,7 +28,7 @@ async def health_check():
     return {"status": "healthy"}
 
 
-@app.post("/analyze", response_model=AnalysisResult)
+@app.post("/analyze")
 async def analyze_document(
         image_url: str = "https://paddle-model-ecology.bj.bcebos.com/paddlex/imgs/demo_image/pp_structure_v3_demo.png"):
     """
@@ -44,9 +41,10 @@ async def analyze_document(
         Structured analysis results
     """
     try:
-        print("image_url:", image_url)
+        print(f"image_url:{image_url}")
         output = pipeline.predict(image_url)
-        return {"code": 200, "msg": "success", "result": len(output)}
+        print(f"output:{output}")
+        return {"code": 200, "msg": "success", "result": "good"}
 
     except Exception as e:
         return {"error": str(e)}

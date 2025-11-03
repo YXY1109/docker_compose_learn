@@ -24,14 +24,17 @@ curl http://localhost:5000/docs
 
 ## mac镜像
 
-```angular2html
+```
 docker build -t paddle_ocr_ppv3:v1.0 -f Dockerfile_slim .
 docker build -t paddle_ocr_ppv3:v1.2 -f Dockerfile_slim .
-docker run --name paddle_ocr_ppv3 -p 5500:5000 -v /Users/cj/Downloads/temp_ocr/models:/home/appuser/.paddlex -v /Users/cj/Downloads/temp_ocr/output:/app/output paddle_ocr_ppv3:v1.2
+docker build -t paddle_ocr_ppv3:v1.4 -f Dockerfile_slim .
+docker build -t paddle_ocr_ppv3:v1.6 -f Dockerfile_slim .
+docker run --name paddle_ocr_ppv3 -p 5500:5000 -v /Users/cj/Downloads/temp_ocr/models:/home/appuser/.paddlex -v /Users/cj/Downloads/temp_ocr/output:/app/output paddle_ocr_ppv3:v1.6
 docker rm paddle_ocr_ppv3
 
 docker build -t paddle_ocr_ppv3:v1.1 -f Dockerfile_slim_3 .
 docker build -t paddle_ocr_ppv3:v1.3 -f Dockerfile_slim_3 .
-docker run --name paddle_ocr_ppv3_1 -p 5500:5000 -v /Users/cj/Downloads/temp_ocr/models:/home/appuser/.paddlex -v /Users/cj/Downloads/temp_ocr/output:/app/output paddle_ocr_ppv3:v1.3
+docker build -t paddle_ocr_ppv3:v1.5 -f Dockerfile_slim_3 .
+docker run --name paddle_ocr_ppv3_1 -p 5501:5000 -v /Users/cj/Downloads/temp_ocr/models:/home/appuser/.paddlex -v /Users/cj/Downloads/temp_ocr/output:/app/output paddle_ocr_ppv3:v1.3
 docker rm paddle_ocr_ppv3_1
 ```
