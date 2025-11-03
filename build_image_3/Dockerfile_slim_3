@@ -8,25 +8,29 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Install build dependencies and security updates
+# Install build dependencies and runtime libraries
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
+    # Runtime libraries that Python packages need at runtime
     libglib2.0-0 \
     libgomp1 \
     libsm6 \
     libxext6 \
     libxrender-dev \
+    # Build tools (only for compilation, won't be copied to runtime)
     build-essential \
     curl \
-    && rm -rf /var/lib/apt/lists/* \
+    ca-certificates && \
+    update-ca-certificates && \
+    rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
 # Upgrade pip and install wheel for faster compilation
 RUN python -m ensurepip --upgrade && \
     pip install --upgrade pip setuptools wheel
 
-# Install Python dependencies in order of least to most likely to change
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -38,68 +42,58 @@ RUN pip install --no-cache-dir \
     pip install --no-cache-dir paddleocr[doc-parser]==3.2.0
 
 # ============ Runtime Stage ============
-# Create minimal runtime image
 FROM python:3.12.9-slim-bookworm AS runtime
 
-# Set runtime environment variables for security and performance
+# Set runtime environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     DEBIAN_FRONTEND=noninteractive \
     TIKTOKEN_CACHE_DIR=/app/data/cache/tiktoken_cache \
     NLTK_DATA=/app/data/cache/nltk_data \
-    PATH="/home/appuser/.local/bin:$PATH" \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    PATH="/home/appuser/.local/bin:$PATH"
 
-# Install ONLY runtime dependencies (no build tools)
+# Install minimal runtime dependencies (no system libraries from apt)
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
-    libglib2.0-0 \
-    libgomp1 \
-    libsm6 \
-    libxext6 \
-    libxrender-dev \
     libgl1 \
     ca-certificates && \
     update-ca-certificates && \
     rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-# Create non-root user with numeric UID/GID for Kubernetes security compliance
-# Use 1001 instead of 1000 to avoid conflicts with common system users
+# Create non-root user
 RUN groupadd -r -g 1001 appgroup && \
     useradd -r -m -s /bin/bash -u 1001 -g 1001 appuser && \
     mkdir -p /app && \
     chown 1001:1001 /app
 
-# Set working directory before copying files
 WORKDIR /app
 
-# Copy Python packages from builder stage
+# 关键部分：复制 Python 环境和系统库从 builder 阶段
+# 1. 复制 Python 包和可执行文件
 COPY --from=builder /usr/local /usr/local
 
-# Copy application code with proper ownership using numeric UID/GID
+# 2. 复制系统共享库（这些是 apt-get 安装的运行时依赖）
+COPY --from=builder /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu
+
+# 3. 复制系统共享数据（如 glib 的模式文件等）
+COPY --from=builder /usr/share /usr/share
+
+# 4. 复制动态链接器配置
+COPY --from=builder /etc/ld.so.cache /etc/
+
+# 复制应用代码
 COPY --chown=1001:1001 requirements.txt ./
-#COPY --chown=1001:1001 ai_core /app/ai_core
-#COPY --chown=1001:1001 ai_api /app/ai_api
 COPY --chown=1001:1001 start.py ./
 
-# Create necessary directories with proper permissions
+# 创建必要目录
 RUN mkdir -p /app/data/cache /app/storage /app/logs && \
     chown -R 1001:1001 /app && \
     chmod -R 755 /app && \
     chmod -R 700 /app/data/cache /app/storage /app/logs
 
-# Switch to non-root user using numeric UID (Kubernetes runAsNonRoot compliance)
 USER 1001
 
-# Add health check
-# HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-#     CMD curl -f http://localhost:5000/health || exit 1
-
-# Expose port
 EXPOSE 5000
-
-# Start application with production settings
 CMD ["python", "start.py"]
